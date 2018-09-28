@@ -35,11 +35,6 @@ func collect(sec int64, fns []func() []*model.MetricValue) {
 	for {
 		<-t
 
-		hostname, err := g.Hostname()
-		if err != nil {
-			continue
-		}
-
 		mvs := []*model.MetricValue{}
 		ignoreMetrics := g.Config().IgnoreMetrics
 
@@ -65,7 +60,7 @@ func collect(sec int64, fns []func() []*model.MetricValue) {
 		now := time.Now().Unix()
 		for j := 0; j < len(mvs); j++ {
 			mvs[j].Step = sec
-			mvs[j].Endpoint = hostname
+			mvs[j].Endpoint = g.IP()
 			mvs[j].Timestamp = now
 		}
 

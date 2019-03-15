@@ -1,8 +1,6 @@
 package cron
 
 import (
-	"fmt"
-
 	"time"
 
 	"github.com/freedomkk-qfeng/windows-agent/g"
@@ -17,19 +15,14 @@ func ReportAgentStatus() {
 
 func reportAgentStatus(interval time.Duration) {
 	for {
-		hostname, err := g.Hostname()
-		if err != nil {
-			hostname = fmt.Sprintf("error:%s", err.Error())
-		}
-
 		req := model.AgentReportRequest{
-			Hostname:     hostname,
+			Hostname:     g.IP(),
 			IP:           g.IP(),
 			AgentVersion: g.VERSION,
 		}
 
 		var resp model.SimpleRpcResponse
-		err = g.HbsClient.Call("Agent.ReportStatus", req, &resp)
+		err := g.HbsClient.Call("Agent.ReportStatus", req, &resp)
 		if err != nil || resp.Code != 0 {
 			g.Logger().Println("call Agent.ReportStatus fail:", err, "Request:", req, "Response:", resp)
 		}
